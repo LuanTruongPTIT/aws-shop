@@ -15,7 +15,7 @@ public class AccountSyncStatusConsumer {
     this.accountService = accountService;
   }
 
-  @KafkaListener(topics = "sync-account-status")
+  @KafkaListener(topics = "sync-account-status", groupId = "account")
   public void onAccountSyncStatus(String payload) {
     ObjectMapper objectMapper = new ObjectMapper();
 
