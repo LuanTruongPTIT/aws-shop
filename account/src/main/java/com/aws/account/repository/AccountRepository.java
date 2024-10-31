@@ -34,8 +34,8 @@ public interface AccountRepository extends JpaRepository<AccountModel, Long> {
   @Modifying
   @Query(value = "UPDATE account SET is_active = :is_active, id_identity = :id_identity WHERE id = :id AND jti = :jti", nativeQuery = true)
   AccountModel updateAccountSyncStatus(
-      @Param("id") int id,
+      @Param("id") Long id,
       @Param("is_active") boolean is_active,
-      @Param("id_identity") int id_identity,
+      @Param("id_identity") Long id_identity,
       @Param("jti") String jti);
 }

@@ -4,9 +4,11 @@ import java.time.Duration;
 
 import org.springframework.stereotype.Service;
 
+import com.aws.account.ViewModel.QueuePayload.AccountSyncStatusConsumerPayload;
 import com.aws.account.ViewModel.QueuePayload.RegisterAccountPayload;
 import com.aws.account.ViewModel.RequestModel.RegisterAccountDto;
 import com.aws.account.ViewModel.ResponseModel.AccountVm;
+import com.aws.account.consumer.AccountSyncStatusConsumer;
 import com.aws.account.exception.CheckExistException;
 import com.aws.account.model.AccountModel;
 import com.aws.account.model.mapper.AccountMapper;
@@ -69,5 +71,15 @@ public class AccountService {
         .phone(account.getPhone())
         .avatar(account.getAvatar())
         .build();
+  }
+
+  public Boolean AccountSyncStatus(AccountSyncStatusConsumerPayload accountSyncStatusConsumer) {
+    AccountModel accountModel = new AccountModel();
+    accountModel.setJti(accountSyncStatusConsumer.getJti());
+    accountModel.set_active(accountSyncStatusConsumer.is_active());
+    accountModel.setId_identity(accountSyncStatusConsumer.getId_identity());
+    accountRepository.updateAccountSyncStatus(accountSyncStatusConsumer.getId(), accountSyncStatusConsumer.is_active(),
+        accountSyncStatusConsumer.getId_identity(), accountSyncStatusConsumer.getJti());
+    return true;
   }
 }

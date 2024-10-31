@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 
 import com.aws.identity.model.IdentityModel;
 import com.aws.identity.model.mapper.IdentitySyncDataMapper;
+import com.aws.identity.publisher.IdentityEventPublisher;
 import com.aws.identity.repository.IdentityRepository;
+import com.aws.identity.view.QueuePayload.SyncAccountStatusPayload;
 import com.aws.identity.view.RequestModel.VerifyAccountDto;
 import com.aws.identity.view.consumer.AccountSync;
 
@@ -13,14 +15,17 @@ public class IdentityService {
   private final IdentitySyncDataMapper identitySyncDataMapper;
   private final IdentityRepository identityRepository;
   private final RedisService redisService;
+  private final IdentityEventPublisher identityEventPublisher;
 
   public IdentityService(
       IdentityRepository identityRepository,
       IdentitySyncDataMapper identitySyncDataMapper,
-      RedisService redisService) {
+      RedisService redisService,
+      IdentityEventPublisher identityEventPublisher) {
     this.identitySyncDataMapper = identitySyncDataMapper;
     this.identityRepository = identityRepository;
     this.redisService = redisService;
+    this.identityEventPublisher = identityEventPublisher;
   }
 
   public void SyncDataIdentity(AccountSync accountSync) {
@@ -47,6 +52,13 @@ public class IdentityService {
     identityModel.set_active(true);
     identityModel.set_verify(true);
     identityRepository.update(identityModel);
+    SyncAccountStatusPayload syncAccountStatusPayload = new SyncAccountStatusPayload(
+        identityModel.getAccount_id(),
+        identityModel.getJti(),
+        identityModel.getId(),
+        identityModel.is_active());
+
+    identityEventPublisher.sendSyncAccountStatus(syncAccountStatusPayload);
     return true;
   }
 }
