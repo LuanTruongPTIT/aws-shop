@@ -1,0 +1,13 @@
+server {
+  server_name api.aws.local www.api.aws.local;
+  
+  location /account/ {
+    rewrite ^/account/(.*)$ /$1 break;
+    proxy_pass http://account;
+
+  }
+  location /identity/ {
+    rewrite ^/identity/(.*)$ /$1 break;
+    proxy_pass http://identity;  
+  }
+}
