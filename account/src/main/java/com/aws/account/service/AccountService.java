@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 import com.aws.account.ViewModel.QueuePayload.AccountSyncStatusConsumerPayload;
 import com.aws.account.ViewModel.QueuePayload.RegisterAccountPayload;
 import com.aws.account.ViewModel.RequestModel.RegisterAccountDto;
+import com.aws.account.ViewModel.RequestModel.SendEmailVerificationDto;
 import com.aws.account.ViewModel.ResponseModel.AccountVm;
-import com.aws.account.consumer.AccountSyncStatusConsumer;
 import com.aws.account.exception.CheckExistException;
+import com.aws.account.exception.NotFoundException;
 import com.aws.account.model.AccountModel;
 import com.aws.account.model.mapper.AccountMapper;
 import com.aws.account.publisher.account.AccountEventPublisher;
@@ -51,9 +52,13 @@ public class AccountService {
     String code = SecureRandomNumberGenerator.generateFiveDigitNumber();
 
     // create key and save code in redis
-    String key = MessageUtils.createKey(jti, "::", code);
 
-    redisService.setValueString(key, code, Duration.ofMinutes(15).toSeconds());
+    StringBuilder cmd = new StringBuilder();
+    cmd.append(jti);
+    cmd.append("::");
+    cmd.append(code);
+    System.out.println("cmd : " + cmd.toString());
+    redisService.setValueString(cmd.toString(), code, Duration.ofMinutes(15).toSeconds());
 
     RegisterAccountPayload registerAccountPayload = RegisterAccountPayload.builder()
         .body("Your verification code is " + code)
@@ -80,6 +85,30 @@ public class AccountService {
     accountModel.setId_identity(accountSyncStatusConsumer.getId_identity());
     accountRepository.updateAccountSyncStatus(accountSyncStatusConsumer.getId(), accountSyncStatusConsumer.is_active(),
         accountSyncStatusConsumer.getId_identity(), accountSyncStatusConsumer.getJti());
+    return true;
+  }
+
+  public Boolean SendVerificationCode(SendEmailVerificationDto sendEmailVerificationDto) {
+    AccountModel accountModel = accountMapper.toAccountFromSendEmailVerificationDto(sendEmailVerificationDto);
+    // find by account is exist
+    accountModel = accountRepository.findByJti(accountModel.getJti());
+
+    if (accountModel == null) {
+      throw new NotFoundException("Account is not exist");
+    }
+    String code = SecureRandomNumberGenerator.generateFiveDigitNumber();
+    // create key and save code in redis
+    String cmd = String.format("%s::%s", accountModel.getJti(), code);
+    // logger.info("cmd : {}", cmd.toString());
+    redisService.setValueString(cmd.toString(), code, Duration.ofMinutes(15).toSeconds());
+    RegisterAccountPayload registerAccountPayload = RegisterAccountPayload.builder()
+        .body("Your verification code is " + code)
+        .email(accountModel.getEmail())
+        .id(String.valueOf(accountModel.getId()))
+        .subject("Send Verification Code")
+        .build();
+
+    accountEventPublisher.sendEmailRegisterEvent(registerAccountPayload);
     return true;
   }
 }

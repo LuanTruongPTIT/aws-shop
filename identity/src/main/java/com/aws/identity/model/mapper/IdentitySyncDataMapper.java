@@ -7,7 +7,6 @@ import com.aws.identity.view.consumer.AccountSync;
 
 @Mapper(componentModel = "spring")
 public interface IdentitySyncDataMapper {
-
   @Mapping(target = "account_id", source = "id")
   @Mapping(target = "email", source = "email")
   @Mapping(target = "password", source = "password")

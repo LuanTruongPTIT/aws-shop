@@ -1,7 +1,7 @@
 package com.aws.identity.service;
 
 import org.springframework.stereotype.Service;
-
+import com.aws.identity.exception.NotFoundException;
 import com.aws.identity.model.IdentityModel;
 import com.aws.identity.model.mapper.IdentitySyncDataMapper;
 import com.aws.identity.publisher.IdentityEventPublisher;
@@ -31,7 +31,6 @@ public class IdentityService {
   public void SyncDataIdentity(AccountSync accountSync) {
     IdentityModel identityModel = identitySyncDataMapper.toIdentityModellFromIdentitySyncData(accountSync);
     identityRepository.save(identityModel);
-    System.out.println("Data Synced");
   }
 
   public boolean VerifyAccount(VerifyAccountDto request) {
@@ -42,16 +41,17 @@ public class IdentityService {
     cmd.append(request.code());
     String codeCheck = redisService.getValueString(cmd.toString());
     if (codeCheck == null) {
-      return false;
+      throw new NotFoundException("INVALID_CODE");
     }
     // find JTI
     IdentityModel identityModel = identityRepository.findByJti(request.jti());
     if (identityModel == null) {
-      return false;
+      throw new NotFoundException("INVALID_JTI");
     }
     identityModel.set_active(true);
     identityModel.set_verify(true);
-    identityRepository.update(identityModel);
+    identityRepository.updateIdentityModel(identityModel.is_active(), identityModel.getJti(),
+        identityModel.is_verify());
     SyncAccountStatusPayload syncAccountStatusPayload = new SyncAccountStatusPayload(
         identityModel.getAccount_id(),
         identityModel.getJti(),
@@ -59,6 +59,9 @@ public class IdentityService {
         identityModel.is_active());
 
     identityEventPublisher.sendSyncAccountStatus(syncAccountStatusPayload);
+
+    // delete key in redis
+    redisService.deleteValueString(cmd.toString());
     return true;
   }
 }
