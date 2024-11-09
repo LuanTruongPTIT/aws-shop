@@ -1,15 +1,22 @@
 package com.aws.identity.service;
 
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.aws.identity.model.IdentityModel;
 import com.aws.identity.model.mapper.IdentitySyncDataMapper;
 import com.aws.identity.repository.IdentityRepository;
 import com.aws.identity.view.RequestModel.VerifyAccountDto;
+import com.aws.identity.view.ResponseModel.LoginAccountResponse;
 import com.aws.identity.view.consumer.AccountSync;
 
 @Service
-public class IdentityService {
+public class IdentityService implements UserDetailsService {
   private final IdentitySyncDataMapper identitySyncDataMapper;
   private final IdentityRepository identityRepository;
   private final RedisService redisService;
@@ -40,7 +47,7 @@ public class IdentityService {
       return false;
     }
     // find JTI
-    IdentityModel identityModel = identityRepository.findByJti(request.jti());
+    Optional<IdentityModel> identityModel = identityRepository.findByJti(request.jti()).orElseThrow(() -> new NotFound);
     if (identityModel == null) {
       return false;
     }
@@ -49,4 +56,21 @@ public class IdentityService {
     identityRepository.update(identityModel);
     return true;
   }
+
+  // public ResponseEntity<LoginAccountResponse> LoginAccount(VerifyAccountDto
+  // request) {
+
+  // }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return null;
+
+  }
+
+  // public UserDetails loadUserByJTI(String jti) throws UsernameNotFoundException
+  // {
+  // IdentityModel identityModel = identityRepository.findByJti(jti)
+  // .orElseThrow(() -> );
+  // }
 }
