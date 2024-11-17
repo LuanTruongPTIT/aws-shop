@@ -3,6 +3,8 @@ package com.aws.account.model;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.ZonedDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,23 +31,34 @@ public class AccountModel {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "first_name", nullable = false)
   private String first_name;
 
+  @Column(name = "last_name", nullable = false)
   private String last_name;
 
+  @Column(name = "email", nullable = false, unique = true)
   private String email;
 
+  @Column(name = "password", nullable = false)
   private String password;
 
+  @Column(name = "phone", nullable = false)
   private String phone;
 
+  @Column(name = "avatar")
   private String avatar;
 
+  @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
   private boolean is_active;
 
+  @Column(name = "id_identity", nullable = true)
   private Long id_identity;
 
+  @Column(name = "jti", nullable = false, unique = true)
   private String jti;
+
+  @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
   private boolean is_deleted;
   @CreationTimestamp
   private ZonedDateTime createdOn;

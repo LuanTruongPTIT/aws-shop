@@ -1,0 +1,10 @@
+server:
+  port: 8761 # Cổng mặc định của Eureka Server
+
+eureka:
+  client:
+    register-with-eureka: false # Eureka Server không tự đăng ký với chính nó
+    fetch-registry: false # Không cần lấy danh sách registry từ chính nó
+
+  server:
+    enable-self-preservation: false # Tắt chế độ tự bảo vệ

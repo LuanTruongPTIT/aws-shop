@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountSyncStatusConsumer {
+public class AccountSyncStatusConsumerPayload {
   public Long id;
   public String jti;
   public boolean is_active;
