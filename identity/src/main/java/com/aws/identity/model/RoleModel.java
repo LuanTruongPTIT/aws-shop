@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "role")
+@Table(name = "table_role")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -30,4 +30,5 @@ public class RoleModel extends AbstractAuditEntity {
 
   @Column(name = "is_deleted", nullable = false)
   private boolean is_deleted;
+
 }

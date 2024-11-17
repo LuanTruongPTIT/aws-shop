@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
-@Table(name = "identity")
+@Table(name = "table_identity")
 @Setter
 @Getter
 @NoArgsConstructor

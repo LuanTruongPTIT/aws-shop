@@ -12,7 +12,7 @@ public class SecurityConfig {
     return http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/v1/identity/verify-account")
+            .requestMatchers("/api/v1/identity/verify-account", "/api/v1/identity/login-account")
             .permitAll()
             .anyRequest()
             .authenticated())

@@ -1,5 +1,7 @@
 package com.aws.account.exception;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -7,9 +9,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+
 import com.aws.account.ViewModel.Error.ErrorVm;
+
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
 
 @ControllerAdvice
 @Slf4j
@@ -47,6 +50,11 @@ public class ApiExceptionHandler {
 
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<ErrorVm> handleNotFoundException(Exception ex, WebRequest request) {
+    return handleBadRequest(ex, request);
+  }
+
+  @ExceptionHandler(AccountIsNotActive.class)
+  public ResponseEntity<ErrorVm> handleAccountIsNotActiveException(Exception ex, WebRequest request) {
     return handleBadRequest(ex, request);
   }
 

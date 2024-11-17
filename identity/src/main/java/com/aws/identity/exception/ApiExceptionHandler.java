@@ -36,6 +36,17 @@ public class ApiExceptionHandler {
     return handleBadRequest(ex, request);
   }
 
+  @ExceptionHandler(PasswordNotMatch.class)
+
+  public ResponseEntity<ErrorVm> handlePasswordNotMatch() {
+    return buildErrorResponse(HttpStatus.BAD_REQUEST, "Password does not match", null, null, null, 400);
+  }
+
+  @ExceptionHandler(AccountIsNotActive.class)
+  public ResponseEntity<ErrorVm> handleAccountIsNotActiveException(Exception ex, WebRequest request) {
+    return handleBadRequest(ex, request);
+  }
+
   private ResponseEntity<ErrorVm> handleBadRequest(Exception ex, WebRequest request) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     String message = ex.getMessage();

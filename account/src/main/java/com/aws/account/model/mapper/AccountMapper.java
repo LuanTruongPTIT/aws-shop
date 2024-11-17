@@ -5,6 +5,7 @@ import com.aws.account.ViewModel.RequestModel.SendEmailVerificationDto;
 import com.aws.account.model.AccountModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
