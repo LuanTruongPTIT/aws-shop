@@ -1,6 +1,7 @@
 package com.aws.account.service;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -8,6 +9,7 @@ import com.aws.account.ViewModel.QueuePayload.AccountSyncStatusConsumerPayload;
 import com.aws.account.ViewModel.QueuePayload.RegisterAccountPayload;
 import com.aws.account.ViewModel.RequestModel.RegisterAccountDto;
 import com.aws.account.ViewModel.RequestModel.SendEmailVerificationDto;
+import com.aws.account.ViewModel.ResponseModel.AccountCheckEmailResponse;
 import com.aws.account.ViewModel.ResponseModel.AccountVm;
 import com.aws.account.exception.CheckExistException;
 import com.aws.account.exception.NotFoundException;
@@ -110,5 +112,38 @@ public class AccountService {
 
     accountEventPublisher.sendEmailRegisterEvent(registerAccountPayload);
     return true;
+  }
+
+  public AccountCheckEmailResponse CheckEmailIsExist(String email) {
+    AccountModel accountModel = accountRepository.findByEmail(email);
+    if (accountModel == null) {
+      return AccountCheckEmailResponse.builder()
+          .exist(false)
+          .user(null)
+          .build();
+    }
+    Optional<AccountVm> accountVm = Optional.ofNullable(AccountVm.builder().avatar(accountModel.getAvatar())
+        .email(accountModel.getEmail())
+        .first_name(accountModel.getFirst_name())
+        .id(accountModel.getId())
+        .last_name(accountModel.getLast_name())
+        .phone(accountModel.getPhone())
+        .build());
+    return AccountCheckEmailResponse.builder()
+        .exist(true)
+        .user(
+            accountVm)
+        .build();
+  }
+
+  private void sendEmail(AccountModel accountModel, String code) {
+    RegisterAccountPayload registerAccountPayload = RegisterAccountPayload.builder()
+        .body("Your verification code is " + code)
+        .email(accountModel.getEmail())
+        .id(String.valueOf(accountModel.getId()))
+        .subject("Send Verification Code")
+        .build();
+
+    accountEventPublisher.sendEmailRegisterEvent(registerAccountPayload);
   }
 }

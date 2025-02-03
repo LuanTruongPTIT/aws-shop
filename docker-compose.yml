@@ -1,38 +1,6 @@
 version: "3.8"
 
 services:
-  # nginx:
-  #   image: nginx:1.25.3
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./nginx/templates:/etc/nginx/templates
-  #   ports:
-  #     - "80:80"
-  #   networks:
-  #     - aws-network
-  # account:
-  #   build: ./account
-  #   image: luantruong.io/aws/aws-account:latest
-  #   environment:
-  #     # - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/product
-  #     - SERVER_SERVLET_CONTEXT_PATH=/account
-  #     - SERVER_PORT
-  #     - YAS_SERVICES_ACCOUNT
-  #   # volumes:
-  #   #   - ./docker/libs/opentelemetry-javaagent.jar:/opentelemetry-javaagent.jar
-  #   networks:
-  #     - aws-network
-  # identity:
-  #   build: ./identity
-  #   image: luantruong.io/aws/aws-identity:latest
-  #   environment:
-  #     # - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/product
-  #     - SERVER_SERVLET_CONTEXT_PATH=/identity
-  #     - SERVER_PORT
-  #   # volumes:
-  #   #   - ./docker/libs/opentelemetry-javaagent.jar:/opentelemetry-javaagent.jar
-  #   networks:
-  #     - aws-network
   postgres:
     image: debezium/postgres:15-alpine
     build: ./docker/postgres
@@ -50,7 +18,7 @@ services:
     networks:
       - aws-network
   zookeeper:
-    image: debezium/zookeeper:latest
+    image: debezium/zookeeper:2.7.3.Final
     restart: always
     ports:
       - 2181:2181
@@ -76,7 +44,7 @@ services:
     networks:
       - aws-network
   kafka-connect:
-    image: debezium/connect:latest
+    image: debezium/connect:2.4
     restart: always
     ports:
       - 8083:8083
@@ -90,22 +58,6 @@ services:
       - OFFSET_STORAGE_TOPIC=kafka_connect_offsets
     networks:
       - aws-network
-  # kafka-ui:
-  #   image: provectuslabs/kafka-ui:latest
-  #   container_name: kafka-ui
-  #   environment:
-  #     KAFKA_CLUSTERS_0_NAME: kafka
-  #     KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-  #     KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-  #     KAFKA_BROKERCONNECT: kafka:9092
-  #     DYNAMIC_CONFIG_ENABLED: true
-  #   ports:
-  #     - 9089:8080
-  #   depends_on:
-  #     - kafka
-  #     - kafka-connect
-  #   networks:
-  #     - aws-network
   kafka-admin:
     image: "docker.redpanda.com/vectorized/console:latest"
     ports:
@@ -120,66 +72,6 @@ services:
       - kafka-connect
     networks:
       - aws-network
-  # redis-node-1:
-  #   image: redis:latest
-  #   ports:
-  #     - 4000:4000
-  #   hostname: redis-node-1
-  #   volumes:
-  #     - ./redis-node-1:/redis-data
-  #   command: redis-server /redis-data/redis.conf
-  #   networks:
-  #     - aws-network
-  # redis-node-2:
-  #   image: redis:latest
-  #   ports:
-  #     - 4001:4001
-  #   hostname: redis-node-2
-  #   volumes:
-  #     - ./redis-node-2:/redis-data
-  #   command: redis-server /redis-data/redis.conf
-  #   networks:
-  #     - aws-network
-  # redis-node-3:
-  #   image: redis:latest
-  #   ports:
-  #     - 4002:4002
-  #   hostname: redis-node-3
-  #   volumes:
-  #     - ./redis-node-3:/redis-data
-  #   command: redis-server /redis-data/redis.conf
-  #   networks:
-  #     - aws-network
-  # redis-node-4:
-  #   image: redis:latest
-  #   ports:
-  #     - 4003:4003
-  #   hostname: redis-node-4
-  #   volumes:
-  #     - ./redis-node-4:/redis-data
-  #   command: redis-server /redis-data/redis.conf
-  #   networks:
-  #     - aws-network
-  # redis-node-5:
-  #   image: redis:latest
-  #   ports:
-  #     - 4004:4004
-  #   hostname: redis-node-5
-  #   volumes:
-  #     - ./redis-node-5:/redis-data
-  #   command: redis-server /redis-data/redis.conf
-  #   networks:
-  #     - aws-network
-  # redis-node-6:
-  #   image: redis:latest
-  #   ports:
-  #     - 4005:4005
-  #   hostname: redis-node-6
-  #   volumes:
-  #     - ./redis-node-6:/redis-data
-  #   command: redis-server /redis-data/redis.conf
-  #   networks:
-  #     - aws-network
   redis-insight:
     image: redislabs/redisinsight:latest
     ports:
@@ -190,21 +82,6 @@ services:
       - redis
     networks:
       - aws-network
-  # redis-cluster-master:
-  #   image: redis:latest
-  #   ports:
-  #     - 6999:6999
-  #   hostname: redis-cluster-master
-  #   command: redis-cli -p 4000 --cluster create redis-node-1:4000 redis-node-2:4001 redis-node-3:4002 redis-node-4:4003 redis-node-5:4004 redis-node-6:4005 --cluster-replicas 1 --cluster-yes
-  #   depends_on:
-  #     - redis-node-1
-  #     - redis-node-2
-  #     - redis-node-3
-  #     - redis-node-4
-  #     - redis-node-5
-  #     - redis-node-6
-  #   networks:
-  #     - aws-network
   redis:
     image: redis:latest
     container_name: redis

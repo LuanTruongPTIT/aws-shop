@@ -25,7 +25,7 @@ public class AccountController {
 
   @GetMapping("/hello")
   public String hello() {
-    return "hello";
+    return "Hello PinPin dilac ";
   }
 
   @PostMapping("/register")
@@ -37,4 +37,5 @@ public class AccountController {
   public boolean SendEmailVerificationCode(@RequestBody @Valid SendEmailVerificationDto sendEmailVerificationDto) {
     return accountService.SendVerificationCode(sendEmailVerificationDto);
   }
+
 }

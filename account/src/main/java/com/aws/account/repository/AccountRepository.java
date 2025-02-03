@@ -44,4 +44,7 @@ public interface AccountRepository extends JpaRepository<AccountModel, Long> {
 
   @Query(value = "SELECT * FROM account WHERE jti = :jti AND is_deleted = false", nativeQuery = true)
   AccountModel findByJti(String jti);
+
+  @Query(value = "SELECT * FROM account WHERE email = :email AND is_deleted = false", nativeQuery = true)
+  AccountModel findByEmail(String email);
 }
