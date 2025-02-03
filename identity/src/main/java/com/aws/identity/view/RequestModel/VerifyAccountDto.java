@@ -5,5 +5,4 @@ import jakarta.validation.constraints.NotBlank;
 public record VerifyAccountDto(
     @NotBlank(message = "Code is required") String code,
     @NotBlank(message = "Jti is required") String jti) {
-
 }

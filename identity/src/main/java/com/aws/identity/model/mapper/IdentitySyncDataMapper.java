@@ -2,12 +2,14 @@ package com.aws.identity.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
+
 import com.aws.identity.model.IdentityModel;
 import com.aws.identity.view.consumer.AccountSync;
 
+@Component
 @Mapper(componentModel = "spring")
 public interface IdentitySyncDataMapper {
-
   @Mapping(target = "account_id", source = "id")
   @Mapping(target = "email", source = "email")
   @Mapping(target = "password", source = "password")

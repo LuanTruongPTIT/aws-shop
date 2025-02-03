@@ -13,8 +13,12 @@ import com.google.gson.JsonObject;
 
 @Service
 public class IdentitySyncData {
-  @Autowired
+
   private IdentityService identityService;
+
+  public IdentitySyncData(IdentityService identityService) {
+    this.identityService = identityService;
+  }
 
   @KafkaListener(topics = "dbaccount.public.account")
   public void listen(ConsumerRecord<?, ?> consumerRecord) {

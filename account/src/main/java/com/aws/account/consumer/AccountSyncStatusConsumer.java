@@ -3,21 +3,29 @@ package com.aws.account.consumer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import com.aws.account.ViewModel.QueuePayload.AccountSyncStatusConsumerPayload;
+import com.aws.account.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class AccountSyncStatusConsumer {
+  private AccountService accountService;
 
-  @KafkaListener(topics = "sync-account-status")
+  public AccountSyncStatusConsumer(AccountService accountService) {
+    this.accountService = accountService;
+  }
+
+  @KafkaListener(topics = "sync-account-status", groupId = "account")
   public void onAccountSyncStatus(String payload) {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    AccountSyncStatusConsumer accountSyncStatusConsumer;
+    AccountSyncStatusConsumerPayload accountSyncStatusConsumerPayload;
     try {
-      accountSyncStatusConsumer = objectMapper.readValue(payload, AccountSyncStatusConsumer.class);
+      accountSyncStatusConsumerPayload = objectMapper.readValue(payload, AccountSyncStatusConsumerPayload.class);
+      accountService.AccountSyncStatus(accountSyncStatusConsumerPayload);
     } catch (Exception e) {
       e.printStackTrace();
-      
+
     }
   }
 }

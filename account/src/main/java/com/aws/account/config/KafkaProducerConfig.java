@@ -2,6 +2,8 @@ package com.aws.account.config;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,7 @@ public class KafkaProducerConfig {
   public ProducerFactory<String, String> producerFactory() {
     Map<String, Object> configProps = new HashMap<>();
     configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
+    configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "account");
     configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
         StringSerializer.class);
     configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,

@@ -1,5 +1,7 @@
 package com.aws.account.exception;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -7,9 +9,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+
 import com.aws.account.ViewModel.Error.ErrorVm;
+
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
 
 @ControllerAdvice
 @Slf4j
@@ -43,6 +46,34 @@ public class ApiExceptionHandler {
 
     ErrorVm errorVm = new ErrorVm("400", "Bad Request", "Request information is not valid", errors);
     return ResponseEntity.badRequest().body(errorVm);
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorVm> handleNotFoundException(Exception ex, WebRequest request) {
+    return handleBadRequest(ex, request);
+  }
+
+  @ExceptionHandler(AccountIsNotActive.class)
+  public ResponseEntity<ErrorVm> handleAccountIsNotActiveException(Exception ex, WebRequest request) {
+    return handleBadRequest(ex, request);
+  }
+
+  private ResponseEntity<ErrorVm> handleBadRequest(Exception ex, WebRequest request) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    String message = ex.getMessage();
+
+    return buildErrorResponse(status, message, null, ex, request, 400);
+  }
+
+  private ResponseEntity<ErrorVm> buildErrorResponse(HttpStatus status, String message, List<String> errors,
+      Exception ex, WebRequest request, int statusCode) {
+    ErrorVm errorVm = new ErrorVm(status.toString(), status.getReasonPhrase(), message, errors);
+
+    if (request != null) {
+      log.error(ERROR_LOG_FORMAT, this.getServletPath(request), statusCode, message);
+    }
+
+    return ResponseEntity.status(status).body(errorVm);
   }
 
   private String getServletPath(WebRequest request) {

@@ -1,6 +1,7 @@
 package com.aws.identity.view.Event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,9 @@ public class IdentityEventHandler {
   @Autowired
   private ObjectMapper objectMapper;
 
+  @EventListener
   public void syncAccountStatusEventHandler(SyncAccountStatus syncAccountStatus) {
+    System.out.println("syncAccountStatusEventHandler");
     SyncAccountStatusPayload syncAccountStatusPayload = syncAccountStatus.getSyncAccountStatusPayload();
     try {
       String payloadJson = objectMapper.writeValueAsString(syncAccountStatusPayload);

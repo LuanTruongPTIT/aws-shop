@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aws.account.ViewModel.RequestModel.RegisterAccountDto;
+import com.aws.account.ViewModel.RequestModel.SendEmailVerificationDto;
 import com.aws.account.ViewModel.ResponseModel.AccountVm;
-import com.aws.account.model.AccountModel;
 import com.aws.account.service.AccountService;
 
 import jakarta.validation.Valid;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -26,11 +25,17 @@ public class AccountController {
 
   @GetMapping("/hello")
   public String hello() {
-    return "hello";
+    return "Hello PinPin dilac ";
   }
 
   @PostMapping("/register")
   public ResponseEntity<AccountVm> RegisterAccount(@RequestBody @Valid RegisterAccountDto registerAccountDto) {
     return ResponseEntity.ok(accountService.RegisterAccount(registerAccountDto));
   }
+
+  @PostMapping("/send-verification-code")
+  public boolean SendEmailVerificationCode(@RequestBody @Valid SendEmailVerificationDto sendEmailVerificationDto) {
+    return accountService.SendVerificationCode(sendEmailVerificationDto);
+  }
+
 }

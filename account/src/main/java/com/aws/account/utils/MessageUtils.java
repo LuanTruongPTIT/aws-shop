@@ -19,12 +19,4 @@ public class MessageUtils {
     FormattingTuple formatingTuple = MessageFormatter.arrayFormat(message, var2);
     return formatingTuple.getMessage();
   }
-
-  public static String createKey(String... strings) {
-    StringBuilder result = new StringBuilder();
-    for (String string : strings) {
-      result.append(string);
-    }
-    return result.toString();
-  }
 }

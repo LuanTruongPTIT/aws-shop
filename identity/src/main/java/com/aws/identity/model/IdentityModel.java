@@ -1,7 +1,10 @@
 package com.aws.identity.model;
 
+import com.aws.identity.listener.CustomAuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,12 +12,13 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
-@Table(name = "identity")
+@Table(name = "table_identity")
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(CustomAuditingEntityListener.class)
 public class IdentityModel extends AbstractAuditEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
