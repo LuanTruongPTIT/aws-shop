@@ -1,5 +1,15 @@
 # Microservice with Java Spring Boot
 
+## TODO
+
+- [x] Microservices architectural style
+- [x] Set up Java spring security
+- [x] Set up Kafka connect debezium
+- [ ] Response Caching - Distributed Caching with Redis
+- [ ] Authentication && Authorization with Keycloak
+- [ ] Monitoring và Metrics
+- [ ] Service Discovery và Registry
+
 ## Tentative technologies and frameworks
 
 - Java 21
@@ -19,9 +29,7 @@
 
 ```
 127.0.0.1 identity
-127.0.0.1 api.yas.local
-127.0.0.1 pgadmin.yas.local
-127.0.0.1 grafana
+127.0.0.1 api.aws.local
 127.0.0.1 kafka
 ```
 
