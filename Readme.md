@@ -25,6 +25,6 @@
 127.0.0.1 kafka
 ```
 
-1. Open terminal of your choice, go to `yas` directory, run `docker compose up`, wait for all the containers up and running
+1. Open terminal of your choice, go to `aws` directory, run `docker compose up`, wait for all the containers up and running
 
-1. All the containers up and running then we start source connectors by run script, open any terminal window... go to the YAS root folder and type: ./start-source-connectors.sh
+1. All the containers up and running then we start source connectors by run script, open any terminal window... go to the Aws root folder and type: ./start-source-connectors.sh
