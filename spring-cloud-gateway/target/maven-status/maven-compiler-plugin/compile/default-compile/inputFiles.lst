@@ -1,0 +1,5 @@
+/Users/luan/Documents/aws/spring-cloud-gateway/src/main/java/com/aws/spring_cloud_gateway/SpringCloudGatewayApplication.java
+/Users/luan/Documents/aws/spring-cloud-gateway/src/main/java/com/aws/spring_cloud_gateway/authentication/JwtAuthenticationFilter.java
+/Users/luan/Documents/aws/spring-cloud-gateway/src/main/java/com/aws/spring_cloud_gateway/config/GatewayConfig.java
+/Users/luan/Documents/aws/spring-cloud-gateway/src/main/java/com/aws/spring_cloud_gateway/config/RedisConfig.java
+/Users/luan/Documents/aws/spring-cloud-gateway/src/main/java/com/aws/spring_cloud_gateway/config/SecurityConfig.java
